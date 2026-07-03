@@ -34,13 +34,20 @@
   nav.solid{background:rgba(4,7,15,.96);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(143,163,200,.12)}
   .logo{display:flex;align-items:center;gap:10px}
   .logo svg{height:34px;display:block}
-  /* real VYBE logo (transparent PNG), cropped to the V+VYBE lockup */
-  .logo-crop{width:63px;height:44px;
+  /* real VYBE logo (transparent PNG) split into signet + wordmark, side by side */
+  .logo-lockup{display:flex;align-items:center;gap:10px}
+  .logo-mark{width:41.5px;height:36px;
         background:url("https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/cdf8d776-ec9a-4a68-b76a-1c05b0f0f61e.png") no-repeat;
-        background-size:138.5px auto;background-position:-38px -13.8px}
-  .logo-crop-footer{width:85px;height:60px;
+        background-size:199.3px auto;background-position:-78.7px -19.9px}
+  .logo-word{width:78.8px;height:18px;
         background:url("https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/cdf8d776-ec9a-4a68-b76a-1c05b0f0f61e.png") no-repeat;
-        background-size:189px auto;background-position:-52px -19px}
+        background-size:175px auto;background-position:-48px -55px}
+  .logo-mark-lg{width:46.1px;height:40px;
+        background:url("https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/cdf8d776-ec9a-4a68-b76a-1c05b0f0f61e.png") no-repeat;
+        background-size:221.5px auto;background-position:-87.4px -22.1px}
+  .logo-word-lg{width:87.6px;height:20px;
+        background:url("https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/cdf8d776-ec9a-4a68-b76a-1c05b0f0f61e.png") no-repeat;
+        background-size:194.4px auto;background-position:-53.4px -61.2px}
   .nav-links{display:flex;gap:28px;font-size:14px;color:var(--muted);font-weight:600;letter-spacing:.4px}
   .nav-links a:hover{color:#fff}
   .nav-links a.active{color:var(--text)}
@@ -263,7 +270,7 @@ function artErr(i){
 <!-- NAV -->
 <nav id="topnav">
   <a class="logo" href="#" aria-label="VYBE">
-    <div class="logo-crop"></div>
+    <div class="logo-lockup"><div class="logo-mark"></div><div class="logo-word"></div></div>
   </a>
   <div class="nav-links">
     <a href="#" class="active">Home</a>
@@ -727,7 +734,7 @@ function artErr(i){
 <!-- FOOTER -->
 <footer>
   <div>
-    <div class="logo-crop-footer"></div>
+    <div class="logo-lockup"><div class="logo-mark-lg"></div><div class="logo-word-lg"></div></div>
     <div class="f-claim">Stories. <b>Anytime.</b> Anywhere.</div>
   </div>
   <div class="cols">
