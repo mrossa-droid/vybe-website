@@ -34,13 +34,13 @@
   nav.solid{background:rgba(4,7,15,.96);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(143,163,200,.12)}
   .logo{display:flex;align-items:center;gap:10px}
   .logo svg{height:34px;display:block}
-  /* real VYBE logo, cropped from brand splash; screen blend drops the navy bg */
-  .logo-crop{width:56px;height:48px;mix-blend-mode:screen;
+  /* real VYBE logo (transparent PNG), cropped to the V+VYBE lockup */
+  .logo-crop{width:63px;height:44px;
         background:url("https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/cdf8d776-ec9a-4a68-b76a-1c05b0f0f61e.png") no-repeat;
-        background-size:267px auto;background-position:-106px -48px}
-  .logo-crop-footer{width:101px;height:64px;mix-blend-mode:screen;
+        background-size:138.5px auto;background-position:-38px -13.8px}
+  .logo-crop-footer{width:85px;height:60px;
         background:url("https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/cdf8d776-ec9a-4a68-b76a-1c05b0f0f61e.png") no-repeat;
-        background-size:306px auto;background-position:-102px -55px}
+        background-size:189px auto;background-position:-52px -19px}
   .nav-links{display:flex;gap:28px;font-size:14px;color:var(--muted);font-weight:600;letter-spacing:.4px}
   .nav-links a:hover{color:#fff}
   .nav-links a.active{color:var(--text)}
@@ -748,8 +748,8 @@ function artErr(i){
   const src=v.querySelector('source');
   src.addEventListener('error',()=>hero.classList.add('novideo'));
   v.addEventListener('error',()=>hero.classList.add('novideo'));
-  // if metadata never arrives (file absent), fall back after 2.5 s
-  setTimeout(()=>{if(v.readyState===0)hero.classList.add('novideo')},2500);
+  // fall back only when the source is truly missing (not merely still loading)
+  setTimeout(()=>{if(v.readyState===0&&v.networkState===3)hero.classList.add('novideo')},4000);
 
   // Sound toggle
   const sb=document.getElementById('soundBtn');
