@@ -34,6 +34,13 @@
   nav.solid{background:rgba(4,7,15,.96);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(143,163,200,.12)}
   .logo{display:flex;align-items:center;gap:10px}
   .logo svg{height:34px;display:block}
+  /* real VYBE logo, cropped from brand splash; screen blend drops the navy bg */
+  .logo-crop{width:56px;height:48px;mix-blend-mode:screen;
+        background:url("https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/cdf8d776-ec9a-4a68-b76a-1c05b0f0f61e.png") no-repeat;
+        background-size:267px auto;background-position:-106px -48px}
+  .logo-crop-footer{width:101px;height:64px;mix-blend-mode:screen;
+        background:url("https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/cdf8d776-ec9a-4a68-b76a-1c05b0f0f61e.png") no-repeat;
+        background-size:306px auto;background-position:-102px -55px}
   .nav-links{display:flex;gap:28px;font-size:14px;color:var(--muted);font-weight:600;letter-spacing:.4px}
   .nav-links a:hover{color:#fff}
   .nav-links a.active{color:var(--text)}
@@ -256,20 +263,7 @@ function artErr(i){
 <!-- NAV -->
 <nav id="topnav">
   <a class="logo" href="#" aria-label="VYBE">
-    <svg viewBox="0 0 236 56" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="vg1" x1="0" y1="0" x2="0.6" y2="1">
-          <stop offset="0" stop-color="#6EC9FF"/><stop offset="1" stop-color="#1D4ED8"/>
-        </linearGradient>
-        <linearGradient id="vg2" x1="0.4" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#4EA8F5"/><stop offset="1" stop-color="#1E3A8A"/>
-        </linearGradient>
-      </defs>
-      <!-- V mark: two folded ribbon strokes -->
-      <path d="M2 2 L21 2 L36 39 L28 54 Z" fill="url(#vg1)"/>
-      <path d="M37 2 L56 2 L32 49 L28 54 L24 43 Z" fill="url(#vg2)"/>
-      <text x="70" y="41" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="10" fill="#FFFFFF">VYBE</text>
-    </svg>
+    <div class="logo-crop"></div>
   </a>
   <div class="nav-links">
     <a href="#" class="active">Home</a>
@@ -733,19 +727,7 @@ function artErr(i){
 <!-- FOOTER -->
 <footer>
   <div>
-    <svg viewBox="0 0 236 56" xmlns="http://www.w3.org/2000/svg" style="height:30px">
-      <defs>
-        <linearGradient id="vg3" x1="0" y1="0" x2="0.6" y2="1">
-          <stop offset="0" stop-color="#6EC9FF"/><stop offset="1" stop-color="#1D4ED8"/>
-        </linearGradient>
-        <linearGradient id="vg4" x1="0.4" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#4EA8F5"/><stop offset="1" stop-color="#1E3A8A"/>
-        </linearGradient>
-      </defs>
-      <path d="M2 2 L21 2 L36 39 L28 54 Z" fill="url(#vg3)"/>
-      <path d="M37 2 L56 2 L32 49 L28 54 L24 43 Z" fill="url(#vg4)"/>
-      <text x="70" y="41" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="10" fill="#FFFFFF">VYBE</text>
-    </svg>
+    <div class="logo-crop-footer"></div>
     <div class="f-claim">Stories. <b>Anytime.</b> Anywhere.</div>
   </div>
   <div class="cols">
