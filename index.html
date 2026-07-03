@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VYBE — Stories. Anytime. Anywhere.</title>
+<style>
+  :root{
+    --bg:#04070F;
+    --bg2:#0A1228;
+    --panel:#0E1834;
+    --cyan:#22D3EE;
+    --blue:#3B82F6;
+    --blue2:#1E40AF;
+    --violet:#7C3AED;
+    --gold:#F5C518;
+    --text:#EAF2FF;
+    --muted:#8FA3C8;
+    --allegro:#FF6A00;
+    --orlen:#E30613;
+    --pzu:#0055A5;
+    --inpost:#FFCC00;
+    --mokate:#C8973F;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- NAV ---------- */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:36px;
+      padding:16px 56px;background:linear-gradient(180deg,rgba(4,7,15,.9),rgba(4,7,15,.55) 70%,transparent);
+      transition:background .3s}
+  nav.solid{background:rgba(4,7,15,.96);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(143,163,200,.12)}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo svg{height:34px;display:block}
+  .nav-links{display:flex;gap:28px;font-size:14px;color:var(--muted);font-weight:600;letter-spacing:.4px}
+  .nav-links a:hover{color:#fff}
+  .nav-links a.active{color:var(--text)}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:18px}
+  .search{width:200px;padding:9px 14px;border-radius:20px;border:1px solid rgba(143,163,200,.25);
+          background:rgba(14,24,52,.6);color:var(--text);font-size:13px;outline:none}
+  .search::placeholder{color:var(--muted)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:6px;font-weight:700;
+       font-size:15px;letter-spacing:.3px;cursor:pointer;border:none;transition:all .2s}
+  .btn-primary{background:#fff;color:#04070F}
+  .btn-primary:hover{background:#D6E4FF}
+  .btn-ghost{background:rgba(109,125,155,.35);color:var(--text);backdrop-filter:blur(6px)}
+  .btn-ghost:hover{background:rgba(109,125,155,.55)}
+  .btn-sm{padding:8px 20px;font-size:13px;border-radius:6px}
+  .btn-cta{background:linear-gradient(90deg,#4FC3F7,#2563EB);color:#fff;box-shadow:0 0 24px rgba(59,130,246,.5)}
+  .btn-cta:hover{box-shadow:0 0 40px rgba(59,130,246,.8)}
+
+  /* ---------- HERO (autoplay trailer, HBO Max style) ---------- */
+  .hero{position:relative;height:96vh;min-height:680px;display:flex;align-items:flex-end;overflow:hidden;
+        background:linear-gradient(180deg,#050A18 0%,#081226 55%,var(--bg) 100%)}
+  .hero-fallback{position:absolute;inset:0;z-index:0;
+        background:
+          radial-gradient(1100px 600px at 75% 30%,rgba(59,130,246,.30),transparent 60%),
+          radial-gradient(900px 500px at 85% 75%,rgba(124,58,237,.20),transparent 60%),
+          radial-gradient(700px 400px at 12% 85%,rgba(34,211,238,.10),transparent 60%)}
+  #heroVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+  .hero-shade{position:absolute;inset:0;z-index:2;pointer-events:none;
+        background:linear-gradient(90deg,rgba(4,7,15,.92) 0%,rgba(4,7,15,.55) 34%,rgba(4,7,15,.05) 62%),
+                   linear-gradient(180deg,rgba(4,7,15,.35) 0%,transparent 26%,transparent 62%,var(--bg) 98%)}
+  .hero-content{position:relative;z-index:3;max-width:620px;padding:0 56px 96px}
+  .badge-row{display:flex;gap:10px;margin-bottom:18px;align-items:center}
+  .badge{font-size:11px;font-weight:800;letter-spacing:1.6px;padding:6px 12px;border-radius:4px;text-transform:uppercase}
+  .badge-original{background:linear-gradient(90deg,#4FC3F7,#2563EB);color:#fff}
+  .badge-genre{border:1px solid rgba(143,163,200,.45);color:#C4D3EE}
+  .hero h1{font-size:72px;font-weight:900;line-height:1;letter-spacing:2px;margin-bottom:16px;
+        text-transform:uppercase;text-shadow:0 4px 40px rgba(0,0,0,.7)}
+  .hero .meta{display:flex;gap:18px;color:#C4D3EE;font-size:14px;font-weight:600;margin-bottom:16px;flex-wrap:wrap}
+  .hero .meta b{color:var(--gold)}
+  .hero p{font-size:17px;line-height:1.6;color:#D9E4F8;margin-bottom:30px;max-width:540px;
+        text-shadow:0 2px 16px rgba(0,0,0,.6)}
+  .laurels{display:flex;gap:14px;margin-bottom:26px;font-size:11px;letter-spacing:1.2px;color:#B9C8E4;
+        text-transform:uppercase;font-weight:700;flex-wrap:wrap}
+  .laurels span{border:1px solid rgba(185,200,228,.35);border-radius:4px;padding:5px 10px;background:rgba(4,7,15,.4);backdrop-filter:blur(4px)}
+  .hero-poster{display:none;position:absolute;right:7%;bottom:14%;z-index:3;width:300px;border-radius:16px;
+        overflow:hidden;box-shadow:0 0 90px rgba(59,130,246,.5),0 40px 80px rgba(0,0,0,.65);
+        border:1px solid rgba(234,242,255,.15);transform:rotate(2.5deg)}
+  .hero-poster img{width:100%;display:block}
+  .hero.novideo .hero-poster{display:block}
+  .hero.novideo #heroVideo{display:none}
+  .sound-btn{position:absolute;right:56px;bottom:110px;z-index:4;width:46px;height:46px;border-radius:50%;
+        border:1.5px solid rgba(234,242,255,.5);background:rgba(4,7,15,.45);color:#fff;font-size:18px;
+        cursor:pointer;backdrop-filter:blur(6px);transition:all .2s}
+  .sound-btn:hover{background:rgba(4,7,15,.75);border-color:#fff}
+  .hero.novideo .sound-btn{display:none}
+  .hero-claim{position:absolute;right:56px;bottom:44px;z-index:3;font-size:12px;font-weight:700;letter-spacing:4px;
+        text-transform:uppercase;color:var(--muted)}
+  .hero-claim b{color:var(--cyan)}
+
+  /* ---------- SECTIONS / ROWS ---------- */
+  section{padding:38px 56px 8px;position:relative}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:18px}
+  .sec-head h2{font-size:22px;font-weight:800;letter-spacing:.2px}
+  .sec-head .see-all{font-size:13px;color:var(--cyan);font-weight:600;margin-left:auto}
+  .sec-tag{font-size:10px;font-weight:800;letter-spacing:2px;padding:5px 10px;border-radius:4px;text-transform:uppercase}
+  .row{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 30px;scrollbar-width:none}
+  .row::-webkit-scrollbar{display:none}
+
+  /* poster cards 9:16 — real artwork with graceful gradient fallback */
+  .card{flex:0 0 188px;height:334px;border-radius:10px;position:relative;overflow:hidden;cursor:pointer;
+        transition:transform .28s,box-shadow .28s;border:1px solid rgba(234,242,255,.08);background:#0B1226}
+  .card:hover{transform:translateY(-8px) scale(1.045);box-shadow:0 20px 54px rgba(0,0,0,.75),0 0 34px rgba(59,130,246,.25);z-index:3}
+  .card img.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .card .shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(4,8,20,.9) 96%)}
+  .card .c-title{position:absolute;bottom:14px;left:14px;right:14px;font-weight:800;font-size:15px;line-height:1.25;
+        text-shadow:0 2px 12px rgba(0,0,0,.85)}
+  .card .c-genre{position:absolute;bottom:0;left:14px;right:14px;transform:translateY(-2px);
+        font-size:10px;letter-spacing:1.6px;color:rgba(234,242,255,.7);text-transform:uppercase;padding-bottom:5px}
+  .card .c-badge{position:absolute;top:10px;left:10px;font-size:9px;font-weight:800;letter-spacing:1.4px;
+        padding:4px 8px;border-radius:3px;text-transform:uppercase;background:rgba(4,8,20,.7);
+        border:1px solid rgba(34,211,238,.5);color:var(--cyan);backdrop-filter:blur(4px);z-index:2}
+  .card .c-award{position:absolute;top:10px;right:10px;font-size:9px;font-weight:800;letter-spacing:1px;
+        padding:4px 8px;border-radius:3px;text-transform:uppercase;background:rgba(245,197,24,.92);color:#241A02;z-index:2}
+  .progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(234,242,255,.15);z-index:2}
+  .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--blue))}
+  /* when a poster image has a real title burned in, hide the CSS title */
+  .card.hasart .c-title,.card.hasart .c-genre{opacity:0}
+  .card.hasart:hover .c-title,.card.hasart:hover .c-genre{opacity:1;transition:opacity .25s}
+  .card.hasart:hover .shade{background:linear-gradient(180deg,transparent 40%,rgba(4,8,20,.95) 96%)}
+
+  /* gradient fallbacks (shown when image missing) */
+  .p1{background:radial-gradient(200px 150px at 50% 28%,rgba(245,197,88,.55),transparent 65%),linear-gradient(165deg,#1B2C55,#27407A 45%,#0D1731)}
+  .p2{background:radial-gradient(180px 140px at 60% 30%,rgba(34,211,238,.4),transparent 60%),linear-gradient(160deg,#0E2A3F,#123B57 50%,#081525)}
+  .p3{background:radial-gradient(190px 150px at 40% 25%,rgba(124,58,237,.5),transparent 62%),linear-gradient(165deg,#221641,#33206B 50%,#100A26)}
+  .p4{background:radial-gradient(200px 160px at 55% 30%,rgba(226,110,66,.45),transparent 60%),linear-gradient(160deg,#3A1E27,#592E37 50%,#180B10)}
+  .p5{background:radial-gradient(190px 140px at 50% 26%,rgba(94,204,160,.4),transparent 62%),linear-gradient(165deg,#0E3230,#14504A 50%,#071A18)}
+  .p6{background:radial-gradient(200px 150px at 45% 30%,rgba(59,130,246,.5),transparent 62%),linear-gradient(160deg,#11224E,#1B3578 50%,#080F26)}
+  .p7{background:radial-gradient(180px 140px at 55% 28%,rgba(234,242,255,.3),transparent 60%),linear-gradient(165deg,#26314B,#3A4A6E 50%,#10182B)}
+  .p8{background:radial-gradient(190px 150px at 50% 30%,rgba(240,80,120,.4),transparent 60%),linear-gradient(160deg,#3A1430,#5C1F4B 50%,#160819)}
+
+  /* ---------- ORIGINALS BANNER ---------- */
+  .banner{margin:26px 56px 8px;border-radius:18px;overflow:hidden;border:1px solid rgba(59,130,246,.25);
+        box-shadow:0 20px 70px rgba(0,0,0,.55);position:relative}
+  .banner img{width:100%;display:block}
+  .banner.noimg{display:none}
+
+  /* ---------- STORIES THAT MATTER ---------- */
+  .matter{background:linear-gradient(180deg,transparent,rgba(245,197,24,.045) 30%,transparent)}
+  .badge-gold{background:linear-gradient(90deg,#F5C518,#E8A317);color:#241A02}
+  .matter .card:hover{box-shadow:0 20px 54px rgba(0,0,0,.75),0 0 34px rgba(245,197,24,.28)}
+  .matter .c-badge{border-color:rgba(245,197,24,.55);color:var(--gold)}
+
+  /* ---------- BRAND STORIES ---------- */
+  .brands-sec{padding-top:52px}
+  .brands-sec .sec-sub{color:var(--muted);font-size:14px;margin:-12px 0 24px;max-width:640px;line-height:1.6}
+  .bcard{flex:0 0 340px;height:298px;border-radius:14px;position:relative;overflow:hidden;cursor:pointer;
+        transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;justify-content:flex-end;padding:22px}
+  .bcard:hover{transform:translateY(-6px)}
+  .bcard .b-presents{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px;
+        display:flex;align-items:center;gap:8px}
+  .bcard .b-logo{display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;
+        padding:4px 9px;border-radius:4px;letter-spacing:.5px}
+  .bcard h3{font-size:24px;font-weight:900;letter-spacing:-.3px;margin-bottom:6px}
+  .bcard p{font-size:13px;line-height:1.5;color:rgba(234,242,255,.8)}
+  .bcard .b-tag{position:absolute;top:16px;left:16px;font-size:9px;font-weight:800;letter-spacing:1.6px;
+        padding:5px 10px;border-radius:3px;text-transform:uppercase;backdrop-filter:blur(4px);z-index:2}
+  .bcard img.bart{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .bcard .b-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,8,20,.15) 20%,rgba(4,8,20,.9) 88%)}
+  .bcard .b-presents,.bcard h3,.bcard p{position:relative;z-index:2}
+
+  .b-loreal{background:radial-gradient(360px 240px at 72% 22%,rgba(212,175,55,.35),transparent 65%),linear-gradient(160deg,#1A1408,#2E2410 45%,#0E0A04);
+        border:1px solid rgba(212,175,55,.5);box-shadow:0 0 34px rgba(212,175,55,.2)}
+  .b-loreal:hover{box-shadow:0 14px 54px rgba(212,175,55,.4)}
+  .b-loreal .b-presents{color:#EBD9A2}.b-loreal .b-logo{background:#000;color:#fff;border:1px solid #D4AF37}
+  .b-loreal .b-tag{background:rgba(212,175,55,.16);border:1px solid rgba(212,175,55,.5);color:#EBD9A2}
+
+  .b-oshee{background:radial-gradient(360px 240px at 72% 22%,rgba(132,204,22,.35),transparent 65%),linear-gradient(160deg,#0E1A05,#1B300A 45%,#070F03);
+        border:1px solid rgba(132,204,22,.5);box-shadow:0 0 34px rgba(132,204,22,.18)}
+  .b-oshee:hover{box-shadow:0 14px 54px rgba(132,204,22,.38)}
+  .b-oshee .b-presents{color:#C7EF8F}.b-oshee .b-logo{background:#84CC16;color:#08140A}
+  .b-oshee .b-tag{background:rgba(132,204,22,.14);border:1px solid rgba(132,204,22,.5);color:#C7EF8F}
+
+  .b-allegro{background:radial-gradient(360px 240px at 75% 20%,rgba(255,106,0,.4),transparent 65%),linear-gradient(160deg,#2A1508,#3D1F0C 45%,#140A04);
+        border:1px solid rgba(255,106,0,.45);box-shadow:0 0 34px rgba(255,106,0,.22)}
+  .b-allegro:hover{box-shadow:0 14px 54px rgba(255,106,0,.4)}
+  .b-allegro .b-presents{color:#FFB27A}.b-allegro .b-logo{background:var(--allegro);color:#fff}
+  .b-allegro .b-tag{background:rgba(255,106,0,.18);border:1px solid rgba(255,106,0,.5);color:#FFB27A}
+
+  .b-orlen{background:radial-gradient(360px 240px at 70% 25%,rgba(227,6,19,.35),transparent 65%),linear-gradient(160deg,#26070B,#3B0A11 45%,#120406);
+        border:1px solid rgba(227,6,19,.45);box-shadow:0 0 34px rgba(227,6,19,.2)}
+  .b-orlen:hover{box-shadow:0 14px 54px rgba(227,6,19,.4)}
+  .b-orlen .b-presents{color:#FF8B94}.b-orlen .b-logo{background:var(--orlen);color:#fff}
+  .b-orlen .b-tag{background:rgba(227,6,19,.16);border:1px solid rgba(227,6,19,.5);color:#FF8B94}
+
+  .b-pzu{background:radial-gradient(360px 240px at 72% 22%,rgba(0,85,165,.5),transparent 65%),linear-gradient(160deg,#061527,#0A2440 45%,#030B14);
+        border:1px solid rgba(0,133,255,.4);box-shadow:0 0 34px rgba(0,85,165,.28)}
+  .b-pzu:hover{box-shadow:0 14px 54px rgba(0,133,255,.4)}
+  .b-pzu .b-presents{color:#7FB8F0}.b-pzu .b-logo{background:var(--pzu);color:#fff}
+  .b-pzu .b-tag{background:rgba(0,85,165,.22);border:1px solid rgba(0,133,255,.45);color:#7FB8F0}
+
+  .b-inpost{background:radial-gradient(360px 240px at 74% 22%,rgba(255,204,0,.3),transparent 65%),linear-gradient(160deg,#221C05,#37300B 45%,#120F03);
+        border:1px solid rgba(255,204,0,.4);box-shadow:0 0 34px rgba(255,204,0,.15)}
+  .b-inpost:hover{box-shadow:0 14px 54px rgba(255,204,0,.32)}
+  .b-inpost .b-presents{color:#F5DE7A}.b-inpost .b-logo{background:var(--inpost);color:#241A02}
+  .b-inpost .b-tag{background:rgba(255,204,0,.14);border:1px solid rgba(255,204,0,.45);color:#F5DE7A}
+
+  .b-mokate{background:radial-gradient(360px 240px at 72% 24%,rgba(200,151,63,.35),transparent 65%),linear-gradient(160deg,#211505,#382609 45%,#120C04);
+        border:1px solid rgba(200,151,63,.45);box-shadow:0 0 34px rgba(200,151,63,.18)}
+  .b-mokate:hover{box-shadow:0 14px 54px rgba(200,151,63,.35)}
+  .b-mokate .b-presents{color:#E8C98F}.b-mokate .b-logo{background:var(--mokate);color:#1E1204}
+  .b-mokate .b-tag{background:rgba(200,151,63,.16);border:1px solid rgba(200,151,63,.5);color:#E8C98F}
+
+  /* ---------- FOR BRANDS ---------- */
+  .forbrands{margin:70px 56px 0;padding:64px 56px;border-radius:24px;text-align:center;
+        background:radial-gradient(700px 320px at 50% 0%,rgba(34,211,238,.14),transparent 70%),linear-gradient(180deg,#0C1630,#091026);
+        border:1px solid rgba(34,211,238,.2)}
+  .forbrands .kicker{font-size:11px;font-weight:800;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:14px}
+  .forbrands h2{font-size:38px;font-weight:900;letter-spacing:-.8px;line-height:1.15;margin-bottom:10px}
+  .forbrands .lead{color:var(--muted);font-size:16px;margin-bottom:44px}
+  .flow{display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:48px;flex-wrap:wrap}
+  .flow .step{background:rgba(14,24,52,.8);border:1px solid rgba(143,163,200,.22);border-radius:14px;
+        padding:22px 30px;min-width:210px}
+  .flow .step h4{font-size:16px;font-weight:800;margin-bottom:4px}
+  .flow .step span{font-size:12px;color:var(--muted)}
+  .flow .arrow{color:var(--cyan);font-size:22px;font-weight:800}
+  .flow .step.hot{border-color:rgba(34,211,238,.55);box-shadow:0 0 28px rgba(34,211,238,.2)}
+  .stats{display:flex;justify-content:center;gap:64px;flex-wrap:wrap;margin-bottom:44px}
+  .stat b{display:block;font-size:34px;font-weight:900;background:linear-gradient(90deg,var(--cyan),var(--blue));
+        -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat span{font-size:12px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;font-weight:700}
+
+  /* ---------- FOOTER ---------- */
+  footer{margin-top:80px;padding:56px;border-top:1px solid rgba(143,163,200,.14);
+        display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
+  footer .f-claim{font-size:13px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;margin-top:14px;color:#C4D3EE}
+  footer .f-claim b{color:var(--blue)}
+  footer .cols{display:flex;gap:70px;margin-left:auto}
+  footer h5{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  footer li{list-style:none;font-size:13px;color:#B9C8E4;margin-bottom:9px}
+  footer .copy{flex-basis:100%;font-size:12px;color:var(--muted);border-top:1px solid rgba(143,163,200,.1);padding-top:22px}
+
+  @media(max-width:1100px){.hero h1{font-size:52px}.hero-poster{display:none!important}}
+  @media(max-width:760px){
+    nav{padding:14px 20px;gap:16px}.nav-links,.search{display:none}
+    section{padding:34px 20px 6px}.hero-content{padding:0 20px 80px}.hero h1{font-size:40px}
+    .sound-btn{right:20px;bottom:90px}.hero-claim{right:20px}
+    .banner{margin:20px 20px 6px}
+    .forbrands{margin:50px 20px 0;padding:44px 24px}footer{padding:40px 20px}
+  }
+</style>
+<script>
+/* Poster loader: local file first → remote CDN copy → gradient fallback */
+function artErr(i){
+  if(i.dataset.remote){var r=i.dataset.remote;i.removeAttribute('data-remote');i.src=r;return}
+  var c=i.closest('.card');if(c)c.classList.remove('hasart');i.remove()
+}
+</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="topnav">
+  <a class="logo" href="#" aria-label="VYBE">
+    <svg viewBox="0 0 236 56" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="vg1" x1="0" y1="0" x2="0.6" y2="1">
+          <stop offset="0" stop-color="#6EC9FF"/><stop offset="1" stop-color="#1D4ED8"/>
+        </linearGradient>
+        <linearGradient id="vg2" x1="0.4" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4EA8F5"/><stop offset="1" stop-color="#1E3A8A"/>
+        </linearGradient>
+      </defs>
+      <!-- V mark: two folded ribbon strokes -->
+      <path d="M2 2 L21 2 L36 39 L28 54 Z" fill="url(#vg1)"/>
+      <path d="M37 2 L56 2 L32 49 L28 54 L24 43 Z" fill="url(#vg2)"/>
+      <text x="70" y="41" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="10" fill="#FFFFFF">VYBE</text>
+    </svg>
+  </a>
+  <div class="nav-links">
+    <a href="#" class="active">Home</a>
+    <a href="#studios">VYBE Studios</a>
+    <a href="#originals">Originals</a>
+    <a href="#matter">Stories That Matter</a>
+    <a href="#brandstories">Brand Stories</a>
+  </div>
+  <div class="nav-right">
+    <input class="search" placeholder="Search series...">
+    <button class="btn btn-cta btn-sm">Sign In</button>
+  </div>
+</nav>
+
+<!-- HERO: autoplaying trailer, HBO Max style -->
+<header class="hero" id="hero">
+  <div class="hero-fallback"></div>
+  <video id="heroVideo" autoplay muted loop playsinline preload="auto"
+         poster="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/1c2ffcfe-ad5c-4526-9b77-2776491b7db9.png">
+    <source src="assets/trailer.mp4" type="video/mp4">
+  </video>
+  <div class="hero-shade"></div>
+
+  <div class="hero-content">
+    <div class="badge-row">
+      <span class="badge badge-original">A VYBE Original Film</span>
+      <span class="badge badge-genre">Documentary</span>
+      <span class="badge badge-genre">Also on Roku</span>
+    </div>
+    <h1>Sound<br>of Air</h1>
+    <div class="meta">
+      <span><b>🏆 Winner</b> — LA Short Film Awards</span>
+      <span>14 festival laurels</span>
+      <span>2026</span>
+    </div>
+    <div class="laurels">
+      <span>AI Film Awards · Cannes</span>
+      <span>AI Movie Awards · Spain</span>
+      <span>Fairground · Winner</span>
+      <span>Paris · Best Short Doc</span>
+    </div>
+    <p>She has spent her whole life listening to the wind. An award-winning film by Marcin Rossa —
+       proof of what VYBE Studios can put on every screen in the world.</p>
+    <div style="display:flex;gap:14px">
+      <button class="btn btn-primary">▶&nbsp; Watch Now</button>
+      <button class="btn btn-ghost">ⓘ&nbsp; More Info</button>
+    </div>
+  </div>
+
+  <div class="hero-poster"><img src="assets/poster-sound-of-air.jpg" data-remote="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/1c2ffcfe-ad5c-4526-9b77-2776491b7db9.png" alt="Sound of Air"
+       onerror="if(this.dataset.remote){this.src=this.dataset.remote;this.removeAttribute('data-remote')}else{this.parentElement.style.display='none'}"></div>
+  <button class="sound-btn" id="soundBtn" aria-label="Toggle sound">🔇</button>
+  <div class="hero-claim">Stories. <b>Anytime.</b> Anywhere.</div>
+</header>
+
+<!-- NOW STREAMING — REAL VYBE STUDIOS FILMS -->
+<section id="studios">
+  <div class="sec-head">
+    <h2>From VYBE Studios</h2>
+    <span class="sec-tag" style="border:1px solid rgba(34,211,238,.5);color:var(--cyan)">Now Streaming · Also on Roku</span>
+    <a class="see-all" href="#">See all →</a>
+  </div>
+  <div class="row">
+    <div class="card hasart p2">
+      <img class="art" src="assets/poster-sound-of-air.jpg" data-remote="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/1c2ffcfe-ad5c-4526-9b77-2776491b7db9.png" alt="Sound of Air" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Winner</span><span class="c-award">14 laurels</span>
+      <div class="c-title">Sound of Air</div><div class="c-genre">Documentary · Roku</div>
+    </div>
+    <div class="card hasart p1">
+      <img class="art" src="assets/poster-i-would-like-to-feel.jpg" data-remote="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/a8c19164-c2b9-4295-a4a1-2003fe819179.png" alt="I Would Like to Feel" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Festival Hit</span><span class="c-award">12 laurels</span>
+      <div class="c-title">I Would Like to Feel</div><div class="c-genre">Animation · Roku</div>
+    </div>
+    <div class="card hasart p7">
+      <img class="art" src="assets/poster-the-last-passengers.jpg" data-remote="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/05fda060-902f-444b-ac2d-a38819902fc4.png" alt="The Last Passengers" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">New</span>
+      <div class="c-title">The Last Passengers</div><div class="c-genre">Drama · Roku</div>
+    </div>
+    <div class="card hasart p3">
+      <img class="art" src="assets/poster-the-only-one-who-saw-me.jpg" data-remote="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/694a083f-d265-4cdb-8f4b-ee53a37545fa.png" alt="The Only One Who Saw Me" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Family</span>
+      <div class="c-title">The Only One Who Saw Me</div><div class="c-genre">Animation · Roku</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTINUE WATCHING -->
+<section>
+  <div class="sec-head"><h2>Continue Watching</h2><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p2">
+      <img class="art" src="assets/poster-sound-of-air.jpg" data-remote="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/1c2ffcfe-ad5c-4526-9b77-2776491b7db9.png" alt="" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">32:10 left</span><div class="c-title">Sound of Air</div><div class="progress"><i style="width:64%"></i></div>
+    </div>
+    <div class="card hasart p1">
+      <img class="art" src="assets/poster-i-would-like-to-feel.jpg" data-remote="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/a8c19164-c2b9-4295-a4a1-2003fe819179.png" alt="" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">08:44 left</span><div class="c-title">I Would Like to Feel</div><div class="progress"><i style="width:32%"></i></div>
+    </div>
+    <div class="card hasart p6">
+      <img class="art" src="assets/original-orbital.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105540_14f7f9b4-5bab-4e70-b4cd-906d3e949bf6.png" alt="" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">EP 41</span><div class="c-title">Orbital</div><div class="progress"><i style="width:81%"></i></div>
+    </div>
+    <div class="card hasart p8">
+      <img class="art" src="assets/original-glass-witness.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105542_8e0a04de-b15b-45b3-ac15-582456ab88f3.png" alt="" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">EP 12</span><div class="c-title">The Glass Witness</div><div class="progress"><i style="width:45%"></i></div>
+    </div>
+    <div class="card hasart p5">
+      <img class="art" src="assets/original-kite-keeper.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105547_6cd12178-7c87-467c-87e8-a891b6a245b2.png" alt="" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">EP 03</span><div class="c-title">The Kite Keeper</div><div class="progress"><i style="width:12%"></i></div>
+    </div>
+    <div class="card hasart p3">
+      <img class="art" src="assets/original-emberfall.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105551_087c8fbe-bc83-4d7a-9374-a275abf994eb.png" alt="" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">EP 17</span><div class="c-title">Emberfall</div><div class="progress"><i style="width:56%"></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- VYBE ORIGINALS -->
+<section id="originals">
+  <div class="sec-head"><h2>Trending Originals</h2><span class="sec-tag badge-original badge" style="font-size:10px;padding:5px 10px">Coming 2026/27</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p6">
+      <img class="art" src="assets/original-orbital.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105540_14f7f9b4-5bab-4e70-b4cd-906d3e949bf6.png" alt="Orbital" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Sci-Fi</span>
+      <div class="c-title">Orbital</div><div class="c-genre">Sci-Fi · 72 eps</div>
+    </div>
+    <div class="card hasart p8">
+      <img class="art" src="assets/original-glass-witness.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105542_8e0a04de-b15b-45b3-ac15-582456ab88f3.png" alt="The Glass Witness" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Thriller</span>
+      <div class="c-title">The Glass Witness</div><div class="c-genre">Mystery · 58 eps</div>
+    </div>
+    <div class="card hasart p1">
+      <img class="art" src="assets/original-winter-crown.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105543_1adc3fb6-2a93-434c-92d0-bd2105fd7595.png" alt="The Winter Crown" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Historical</span>
+      <div class="c-title">The Winter Crown</div><div class="c-genre">Historical · 80 eps</div>
+    </div>
+    <div class="card hasart p4">
+      <img class="art" src="assets/original-midnight-in-warsaw.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105545_75d71cbe-fb62-4922-83b7-d2aa5bdbe786.png" alt="Midnight in Warsaw" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Romance</span>
+      <div class="c-title">Midnight in Warsaw</div><div class="c-genre">Romance · 64 eps</div>
+    </div>
+    <div class="card hasart p5">
+      <img class="art" src="assets/original-kite-keeper.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105547_6cd12178-7c87-467c-87e8-a891b6a245b2.png" alt="The Kite Keeper" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Family</span>
+      <div class="c-title">The Kite Keeper</div><div class="c-genre">Family · 48 eps</div>
+    </div>
+    <div class="card hasart p7">
+      <img class="art" src="assets/original-room-404.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105548_9b41edf8-3cbb-495b-b1ce-e003ca1076da.png" alt="Room 404" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Comedy</span>
+      <div class="c-title">Room 404</div><div class="c-genre">Sitcom · 90 eps</div>
+    </div>
+    <div class="card hasart p3">
+      <img class="art" src="assets/original-emberfall.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105551_087c8fbe-bc83-4d7a-9374-a275abf994eb.png" alt="Emberfall" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Gaming</span>
+      <div class="c-title">Emberfall</div><div class="c-genre">Dark Fantasy · Interactive</div>
+    </div>
+    <div class="card hasart p2">
+      <img class="art" src="assets/original-she-dreams-in-code.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105553_142cdfc5-1441-4af1-a02e-ebf56163e7ee.png" alt="She Dreams in Code" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">AI-Native</span>
+      <div class="c-title">She Dreams in Code</div><div class="c-genre">AI-Native · Adaptive</div>
+    </div>
+  </div>
+</section>
+
+<!-- GENRE ROWS (benchmark: VYBE Originals genre board) -->
+<section id="scifi">
+  <div class="sec-head"><h2>Sci-Fi</h2><span class="sec-tag" style="border:1px solid rgba(34,211,238,.5);color:#22D3EE">Future worlds · Space · AI</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p6">
+      <img class="art" src="assets/original-orbital.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105540_14f7f9b4-5bab-4e70-b4cd-906d3e949bf6.png" alt="Orbital" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Sci-Fi</span>
+      <div class="c-title">Orbital</div><div class="c-genre">Sci-Fi · 72 eps</div>
+    </div>
+    <div class="card hasart p3">
+      <img class="art" src="assets/original-echo-of-mars.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112750_60701414-eed2-46a2-b911-54fdd9ed20fd.png" alt="Echo of Mars" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Sci-Fi</span>
+      <div class="c-title">Echo of Mars</div><div class="c-genre">Sci-Fi · 64 eps</div>
+    </div>
+    <div class="card hasart p2">
+      <img class="art" src="assets/original-archive-2091.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112752_5fd1411c-2fea-488c-aedc-369106335cb7.png" alt="Archive 2091" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Sci-Fi</span>
+      <div class="c-title">Archive 2091</div><div class="c-genre">Sci-Fi · 58 eps</div>
+    </div>
+    <div class="card hasart p6">
+      <img class="art" src="assets/original-project-europa.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112754_96fbb00b-c4ec-4d5f-95af-8757af1970d6.png" alt="Project Europa" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Sci-Fi</span>
+      <div class="c-title">Project Europa</div><div class="c-genre">Sci-Fi · 70 eps</div>
+    </div>
+  </div>
+</section>
+
+<section id="thriller">
+  <div class="sec-head"><h2>Thriller &amp; Mystery</h2><span class="sec-tag" style="border:1px solid rgba(167,139,250,.5);color:#A78BFA">Crime · Investigations · Tension</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p8">
+      <img class="art" src="assets/original-glass-witness.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105542_8e0a04de-b15b-45b3-ac15-582456ab88f3.png" alt="The Glass Witness" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Thriller</span>
+      <div class="c-title">The Glass Witness</div><div class="c-genre">Mystery · 58 eps</div>
+    </div>
+    <div class="card hasart p7">
+      <img class="art" src="assets/original-point-zero.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112757_cc0af685-b993-4527-8fb9-6242a78d083f.png" alt="Point Zero" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Thriller</span>
+      <div class="c-title">Point Zero</div><div class="c-genre">Thriller · 60 eps</div>
+    </div>
+    <div class="card hasart p2">
+      <img class="art" src="assets/original-the-invisible.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112758_7c8c0d2b-882f-43a5-a296-abbf13b12f8b.png" alt="The Invisible" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Mystery</span>
+      <div class="c-title">The Invisible</div><div class="c-genre">Mystery · 54 eps</div>
+    </div>
+    <div class="card hasart p8">
+      <img class="art" src="assets/original-47-minutes.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112801_85f8aaf6-08f0-49f3-87f3-68d85109be0b.png" alt="47 Minutes" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Thriller</span>
+      <div class="c-title">47 Minutes</div><div class="c-genre">Thriller · 47 eps</div>
+    </div>
+  </div>
+</section>
+
+<section id="historical">
+  <div class="sec-head"><h2>Historical Stories</h2><span class="sec-tag" style="border:1px solid rgba(245,197,24,.5);color:#F5C518">Great figures · Wars · Civilizations</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p1">
+      <img class="art" src="assets/original-winter-crown.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105543_1adc3fb6-2a93-434c-92d0-bd2105fd7595.png" alt="The Winter Crown" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Historical</span>
+      <div class="c-title">The Winter Crown</div><div class="c-genre">Historical · 80 eps</div>
+    </div>
+    <div class="card hasart p4">
+      <img class="art" src="assets/original-last-astronomer.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112803_71bc291f-8131-4d82-8290-de1ff1a01956.png" alt="The Last Astronomer" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Historical</span>
+      <div class="c-title">The Last Astronomer</div><div class="c-genre">Historical Thriller · 60 eps</div>
+    </div>
+    <div class="card hasart p1">
+      <img class="art" src="assets/original-testament.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112804_f9915b01-1069-4313-a028-bee5098c0cdc.png" alt="Testament" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Historical</span>
+      <div class="c-title">Testament</div><div class="c-genre">Historical · 66 eps</div>
+    </div>
+    <div class="card hasart p4">
+      <img class="art" src="assets/original-amber-road.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112806_0276ec79-ad2b-427c-b70a-90e7361bacd3.png" alt="Amber Road" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Epic</span>
+      <div class="c-title">Amber Road</div><div class="c-genre">Historical Epic · 74 eps</div>
+    </div>
+  </div>
+</section>
+
+<section id="romance">
+  <div class="sec-head"><h2>Romance</h2><span class="sec-tag" style="border:1px solid rgba(244,114,182,.5);color:#F472B6">The category that drives the market</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p4">
+      <img class="art" src="assets/original-midnight-in-warsaw.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105545_75d71cbe-fb62-4922-83b7-d2aa5bdbe786.png" alt="Midnight in Warsaw" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Romance</span>
+      <div class="c-title">Midnight in Warsaw</div><div class="c-genre">Romance · 64 eps</div>
+    </div>
+    <div class="card hasart p8">
+      <img class="art" src="assets/original-blue-hour.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112808_2bb7997d-071f-4e48-9868-60a4e3664849.png" alt="Blue Hour" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Romance</span>
+      <div class="c-title">Blue Hour</div><div class="c-genre">Romance · 56 eps</div>
+    </div>
+    <div class="card hasart p1">
+      <img class="art" src="assets/original-paper-hearts.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112818_a1ea2549-2405-41a1-8d7d-f0dd11433a0e.png" alt="Paper Hearts" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Romance</span>
+      <div class="c-title">Paper Hearts</div><div class="c-genre">Romcom · 48 eps</div>
+    </div>
+    <div class="card hasart p4">
+      <img class="art" src="assets/original-the-vow.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112822_cf91aa7e-b998-4b3b-be4a-7fe4bde63fde.png" alt="The Vow" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Drama</span>
+      <div class="c-title">The Vow</div><div class="c-genre">Romance Drama · 68 eps</div>
+    </div>
+  </div>
+</section>
+
+<section id="family">
+  <div class="sec-head"><h2>Family &amp; Values</h2><span class="sec-tag" style="border:1px solid rgba(74,222,128,.5);color:#4ADE80">Friendship · Family · Courage</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p5">
+      <img class="art" src="assets/original-kite-keeper.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105547_6cd12178-7c87-467c-87e8-a891b6a245b2.png" alt="The Kite Keeper" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Family</span>
+      <div class="c-title">The Kite Keeper</div><div class="c-genre">Family · 48 eps</div>
+    </div>
+    <div class="card hasart p5">
+      <img class="art" src="assets/original-our-summer.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112824_d98d9cdf-c19a-4808-8cb2-634d125953e8.png" alt="Our Summer" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Family</span>
+      <div class="c-title">Our Summer</div><div class="c-genre">Family · 40 eps</div>
+    </div>
+    <div class="card hasart p1">
+      <img class="art" src="assets/original-grandfathers-map.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112826_20d52247-2957-46c6-a400-55796d483ff3.png" alt="Grandfather's Map" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Adventure</span>
+      <div class="c-title">Grandfather's Map</div><div class="c-genre">Family Adventure · 44 eps</div>
+    </div>
+    <div class="card hasart p6">
+      <img class="art" src="assets/original-nela-comet.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112829_27236e92-f494-4a00-8000-15da857a391e.png" alt="Nela & the Comet" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Family</span>
+      <div class="c-title">Nela &amp; the Comet</div><div class="c-genre">Family · 38 eps</div>
+    </div>
+  </div>
+</section>
+
+<section id="comedy">
+  <div class="sec-head"><h2>Sitcoms &amp; Comedy</h2><span class="sec-tag" style="border:1px solid rgba(251,146,60,.5);color:#FB923C">Relatable · Shareable · Repeatable</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p7">
+      <img class="art" src="assets/original-room-404.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105548_9b41edf8-3cbb-495b-b1ce-e003ca1076da.png" alt="Room 404" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Comedy</span>
+      <div class="c-title">Room 404</div><div class="c-genre">Sitcom · 90 eps</div>
+    </div>
+    <div class="card hasart p1">
+      <img class="art" src="assets/original-flat-white.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112832_41df1bfd-0b8a-4623-af3e-837d3161bc99.png" alt="Flat White" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Sitcom</span>
+      <div class="c-title">Flat White</div><div class="c-genre">Sitcom · 84 eps</div>
+    </div>
+    <div class="card hasart p4">
+      <img class="art" src="assets/original-startup.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112835_9bfb6d11-3e8b-4f74-b7e4-12f466825a24.png" alt="Startup!" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Comedy</span>
+      <div class="c-title">Startup!</div><div class="c-genre">Mockumentary · 72 eps</div>
+    </div>
+    <div class="card hasart p7">
+      <img class="art" src="assets/original-the-neighbors.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112837_8a1f8c4e-85a6-4877-843d-94810dfd5b7a.png" alt="The Neighbors" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Sitcom</span>
+      <div class="c-title">The Neighbors</div><div class="c-genre">Sitcom · 96 eps</div>
+    </div>
+  </div>
+</section>
+
+<section id="gaming">
+  <div class="sec-head"><h2>Interactive &amp; Gaming Stories</h2><span class="sec-tag" style="border:1px solid rgba(45,212,191,.5);color:#2DD4BF">Choose your path</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p3">
+      <img class="art" src="assets/original-emberfall.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105551_087c8fbe-bc83-4d7a-9374-a275abf994eb.png" alt="Emberfall" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Gaming</span>
+      <div class="c-title">Emberfall</div><div class="c-genre">Dark Fantasy · Interactive</div>
+    </div>
+    <div class="card hasart p5">
+      <img class="art" src="assets/original-alliance.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112840_a6f7b0ad-0058-4fbd-b022-e1cecdee10c2.png" alt="Alliance" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Interactive</span>
+      <div class="c-title">Alliance</div><div class="c-genre">Choose Your Path · 12 endings</div>
+    </div>
+    <div class="card hasart p3">
+      <img class="art" src="assets/original-neon-arena.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112842_3e646547-89c0-4c92-8544-9295c65b0b26.png" alt="Neon Arena" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Esports</span>
+      <div class="c-title">Neon Arena</div><div class="c-genre">Esports Drama · 52 eps</div>
+    </div>
+    <div class="card hasart p6">
+      <img class="art" src="assets/original-ninth-realm.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112855_2b529149-3963-4877-91f9-9644d1a7dbad.png" alt="The Ninth Realm" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">Fantasy</span>
+      <div class="c-title">The Ninth Realm</div><div class="c-genre">Fantasy · Interactive</div>
+    </div>
+  </div>
+</section>
+
+<section id="ainative">
+  <div class="sec-head"><h2>AI-Native Formats</h2><span class="sec-tag" style="border:1px solid rgba(192,132,252,.5);color:#C084FC">A completely new category</span><a class="see-all" href="#">See all →</a></div>
+  <div class="row">
+    <div class="card hasart p2">
+      <img class="art" src="assets/original-she-dreams-in-code.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_105553_142cdfc5-1441-4af1-a02e-ebf56163e7ee.png" alt="She Dreams in Code" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">AI-Native</span>
+      <div class="c-title">She Dreams in Code</div><div class="c-genre">AI-Native · Adaptive</div>
+    </div>
+    <div class="card hasart p3">
+      <img class="art" src="assets/original-infinite-story.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112857_db24e6b9-a8e2-4e82-a576-15ed93b948ae.png" alt="The Infinite Story" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">AI-Native</span>
+      <div class="c-title">The Infinite Story</div><div class="c-genre">Branching · Endless</div>
+    </div>
+    <div class="card hasart p2">
+      <img class="art" src="assets/original-echo-of-you.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112859_16d9f1b7-2b2c-4542-b821-06b5c06ddea2.png" alt="Echo of You" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">AI-Native</span>
+      <div class="c-title">Echo of You</div><div class="c-genre">Personalized Drama</div>
+    </div>
+    <div class="card hasart p3">
+      <img class="art" src="assets/original-dreamweaver.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112902_9071b9c6-0662-41a9-b3d5-e1027985306e.png" alt="Dreamweaver" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">AI-Native</span>
+      <div class="c-title">Dreamweaver</div><div class="c-genre">Adaptive · Surreal</div>
+    </div>
+  </div>
+</section>
+
+<!-- ORIGINALS SLATE BANNER -->
+<div class="banner">
+  <img src="assets/originals-genres.jpg" alt="VYBE Originals — building the next generation of mobile IP"
+       onerror="this.parentElement.classList.add('noimg')">
+</div>
+
+<!-- STORIES THAT MATTER -->
+<section id="matter" class="matter">
+  <div class="sec-head">
+    <h2>Stories That Matter</h2>
+    <span class="sec-tag badge-gold">Vybe Signature</span>
+    <a class="see-all" href="#">See all →</a>
+  </div>
+  <div class="row">
+    <div class="card hasart p7">
+      <img class="art" src="assets/poster-the-last-passengers.jpg" data-remote="https://d2ol7oe51mr4n9.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/05fda060-902f-444b-ac2d-a38819902fc4.png" alt="The Last Passengers" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">True Story</span>
+      <div class="c-title">The Last Passengers</div><div class="c-genre">Drama · Roku</div>
+    </div>
+    <div class="card hasart p4">
+      <img class="art" src="assets/matter-courage.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112904_029c1e4d-3b4d-4015-af59-4c3b58a4c6d7.png" alt="A Story of Courage" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">True Story</span>
+      <div class="c-title">A Story of Courage</div><div class="c-genre">True Stories · 40 eps</div>
+    </div>
+    <div class="card hasart p7">
+      <img class="art" src="assets/matter-last-letter.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112906_80ec9cea-6b87-4e98-a840-46e14bae6f48.png" alt="The Last Letter" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">True Story</span>
+      <div class="c-title">The Last Letter</div><div class="c-genre">Drama · 36 eps</div>
+    </div>
+    <div class="card hasart p5">
+      <img class="art" src="assets/matter-brothers.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112909_37437130-2100-4595-a33f-c17da9ee28fa.png" alt="Brothers" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">True Story</span>
+      <div class="c-title">Brothers</div><div class="c-genre">Drama · 44 eps</div>
+    </div>
+    <div class="card hasart p2">
+      <img class="art" src="assets/matter-road-home.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112912_58aec632-589d-4942-a3f6-c36d3049fb1d.png" alt="The Road Home" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">True Story</span>
+      <div class="c-title">The Road Home</div><div class="c-genre">Family · 38 eps</div>
+    </div>
+    <div class="card hasart p1">
+      <img class="art" src="assets/matter-stopped-sun.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_112915_e6dfcd88-2718-4922-aaaa-678c4a05c669.png" alt="The Man Who Stopped the Sun" onerror="artErr(this)">
+      <div class="shade"></div><span class="c-badge">True Story</span>
+      <div class="c-title">The Man Who Stopped the Sun</div><div class="c-genre">Biography · 52 eps</div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND STORIES -->
+<section id="brandstories" class="brands-sec">
+  <div class="sec-head"><h2>Brand Stories</h2><span class="sec-tag" style="border:1px solid rgba(34,211,238,.5);color:var(--cyan)">Sponsored Originals</span><a class="see-all" href="#">See all →</a></div>
+  <p class="sec-sub">Series created together with brands. Not ads — stories your favourite brands helped bring to life.</p>
+  <div class="row">
+    <div class="bcard b-mokate">
+      <img class="bart" src="assets/brand-mokate-first-sip.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_123145_06045348-9988-4898-87be-bf8a1be26070.png" alt="" onerror="if(this.dataset.remote){this.src=this.dataset.remote;this.removeAttribute('data-remote')}else{this.remove()}">
+      <div class="b-shade"></div>
+      <span class="b-tag">Sponsored Series</span>
+      <div class="b-presents"><span class="b-logo">MOKATE</span> presents</div>
+      <h3>The First Sip</h3>
+      <p>Every great story starts with the first sip. A feel-good series about a café where strangers become family.</p>
+    </div>
+    <div class="bcard b-loreal">
+      <img class="bart" src="assets/brand-loreal-worth-it.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_123148_60f30252-58ab-42d3-862b-b32bce8ee12e.png" alt="" onerror="if(this.dataset.remote){this.src=this.dataset.remote;this.removeAttribute('data-remote')}else{this.remove()}">
+      <div class="b-shade"></div>
+      <span class="b-tag">Sponsored Series</span>
+      <div class="b-presents"><span class="b-logo">L'ORÉAL</span> presents</div>
+      <h3>Worth It</h3>
+      <p>One night backstage at Fashion Week to prove she's worth it. 22 episodes about talent, courage and confidence.</p>
+    </div>
+    <div class="bcard b-oshee">
+      <img class="bart" src="assets/brand-oshee-second-wind.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_123151_ec2f3b9c-79f6-42d8-841c-13145438200a.png" alt="" onerror="if(this.dataset.remote){this.src=this.dataset.remote;this.removeAttribute('data-remote')}else{this.remove()}">
+      <div class="b-shade"></div>
+      <span class="b-tag">Sponsored Series</span>
+      <div class="b-presents"><span class="b-logo">OSHEE</span> presents</div>
+      <h3>Second Wind</h3>
+      <p>Written off after an injury, she trains for one impossible comeback. 28 episodes of pure energy.</p>
+    </div>
+    <div class="bcard b-inpost">
+      <img class="bart" src="assets/brand-inpost-locker-47.jpg" data-remote="https://d8j0ntlcm91z4.cloudfront.net/user_30uDjdoDmf6g36ffEJcjWRPAd1z/hf_20260703_123154_6dd3652a-5266-423d-a784-562ddec6e1bb.png" alt="" onerror="if(this.dataset.remote){this.src=this.dataset.remote;this.removeAttribute('data-remote')}else{this.remove()}">
+      <div class="b-shade"></div>
+      <span class="b-tag">Sponsored Series</span>
+      <div class="b-presents"><span class="b-logo">InPost</span> presents</div>
+      <h3>Locker 47</h3>
+      <p>Two strangers keep missing each other — until their parcels don't. A romantic mystery told in 26 episodes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <svg viewBox="0 0 236 56" xmlns="http://www.w3.org/2000/svg" style="height:30px">
+      <defs>
+        <linearGradient id="vg3" x1="0" y1="0" x2="0.6" y2="1">
+          <stop offset="0" stop-color="#6EC9FF"/><stop offset="1" stop-color="#1D4ED8"/>
+        </linearGradient>
+        <linearGradient id="vg4" x1="0.4" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4EA8F5"/><stop offset="1" stop-color="#1E3A8A"/>
+        </linearGradient>
+      </defs>
+      <path d="M2 2 L21 2 L36 39 L28 54 Z" fill="url(#vg3)"/>
+      <path d="M37 2 L56 2 L32 49 L28 54 L24 43 Z" fill="url(#vg4)"/>
+      <text x="70" y="41" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="10" fill="#FFFFFF">VYBE</text>
+    </svg>
+    <div class="f-claim">Stories. <b>Anytime.</b> Anywhere.</div>
+  </div>
+  <div class="cols">
+    <div><h5>Watch</h5><ul><li>VYBE Studios Films</li><li>Originals</li><li>Stories That Matter</li><li>Brand Stories</li></ul></div>
+    <div><h5>Company</h5><ul><li>About Vybe</li><li>Vybe Studios</li><li>Careers</li><li>Press</li></ul></div>
+    <div><h5>Partners</h5><ul><li>Creators</li></ul></div>
+  </div>
+  <div class="copy">© 2026 VYBE. The first European premium platform for mobile-first series.</div>
+</footer>
+
+<script>
+  // Nav solid on scroll (Netflix behaviour)
+  const nav=document.getElementById('topnav');
+  addEventListener('scroll',()=>nav.classList.toggle('solid',scrollY>40),{passive:true});
+
+  // Hero video: graceful fallback when assets/trailer.mp4 is missing
+  const hero=document.getElementById('hero'),v=document.getElementById('heroVideo');
+  const src=v.querySelector('source');
+  src.addEventListener('error',()=>hero.classList.add('novideo'));
+  v.addEventListener('error',()=>hero.classList.add('novideo'));
+  // if metadata never arrives (file absent), fall back after 2.5 s
+  setTimeout(()=>{if(v.readyState===0)hero.classList.add('novideo')},2500);
+
+  // Sound toggle
+  const sb=document.getElementById('soundBtn');
+  sb.addEventListener('click',()=>{v.muted=!v.muted;sb.textContent=v.muted?'🔇':'🔊';if(!v.muted)v.play()});
+</script>
+
+</body>
+</html>
