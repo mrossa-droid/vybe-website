@@ -1,0 +1,6 @@
+*.pptx
+*.xlsx
+*.docx
+*.md
+vybe-0*.png
+.DS_Store
